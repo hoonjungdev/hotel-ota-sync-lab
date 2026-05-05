@@ -1,0 +1,92 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8C291851-6AC2-490D-A614-5266E35911E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.Domain", "src\HotelOtaSync.Domain\HotelOtaSync.Domain.csproj", "{DC9DA888-1B61-4238-8369-9D5950935542}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.Application", "src\HotelOtaSync.Application\HotelOtaSync.Application.csproj", "{4273DBBA-2168-4FAD-9FA2-46C3A3D996EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.Infrastructure", "src\HotelOtaSync.Infrastructure\HotelOtaSync.Infrastructure.csproj", "{0C7C4826-C128-4DB1-AEB6-F3B108D4F6B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.Api", "src\HotelOtaSync.Api\HotelOtaSync.Api.csproj", "{72940162-50BB-43D7-A469-1AC56540D773}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.Worker", "src\HotelOtaSync.Worker\HotelOtaSync.Worker.csproj", "{FB7F7421-300F-494C-B6CB-309864736C9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockOta.BlueWave", "src\MockOta.BlueWave\MockOta.BlueWave.csproj", "{CF4E1247-83A2-4B27-9AF2-93BEEF94A1EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockOta.SkyTrip", "src\MockOta.SkyTrip\MockOta.SkyTrip.csproj", "{CD28188A-C87D-4942-8D9D-7A195950711A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{22747415-BC0E-4DCD-AC37-B728B632ED16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.UnitTests", "tests\HotelOtaSync.UnitTests\HotelOtaSync.UnitTests.csproj", "{F1CB7DAB-0998-437B-9C09-EA2E60D76F89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.IntegrationTests", "tests\HotelOtaSync.IntegrationTests\HotelOtaSync.IntegrationTests.csproj", "{AC97AC8E-5833-4493-BA9F-16025CC3FB64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelOtaSync.Contract", "tests\HotelOtaSync.Contract\HotelOtaSync.Contract.csproj", "{08FB657D-3A84-405A-A8EE-976971B1F371}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC9DA888-1B61-4238-8369-9D5950935542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC9DA888-1B61-4238-8369-9D5950935542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC9DA888-1B61-4238-8369-9D5950935542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC9DA888-1B61-4238-8369-9D5950935542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4273DBBA-2168-4FAD-9FA2-46C3A3D996EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4273DBBA-2168-4FAD-9FA2-46C3A3D996EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4273DBBA-2168-4FAD-9FA2-46C3A3D996EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4273DBBA-2168-4FAD-9FA2-46C3A3D996EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C7C4826-C128-4DB1-AEB6-F3B108D4F6B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C7C4826-C128-4DB1-AEB6-F3B108D4F6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C7C4826-C128-4DB1-AEB6-F3B108D4F6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C7C4826-C128-4DB1-AEB6-F3B108D4F6B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72940162-50BB-43D7-A469-1AC56540D773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72940162-50BB-43D7-A469-1AC56540D773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72940162-50BB-43D7-A469-1AC56540D773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72940162-50BB-43D7-A469-1AC56540D773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB7F7421-300F-494C-B6CB-309864736C9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB7F7421-300F-494C-B6CB-309864736C9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB7F7421-300F-494C-B6CB-309864736C9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB7F7421-300F-494C-B6CB-309864736C9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF4E1247-83A2-4B27-9AF2-93BEEF94A1EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF4E1247-83A2-4B27-9AF2-93BEEF94A1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF4E1247-83A2-4B27-9AF2-93BEEF94A1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF4E1247-83A2-4B27-9AF2-93BEEF94A1EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD28188A-C87D-4942-8D9D-7A195950711A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD28188A-C87D-4942-8D9D-7A195950711A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD28188A-C87D-4942-8D9D-7A195950711A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD28188A-C87D-4942-8D9D-7A195950711A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1CB7DAB-0998-437B-9C09-EA2E60D76F89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1CB7DAB-0998-437B-9C09-EA2E60D76F89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1CB7DAB-0998-437B-9C09-EA2E60D76F89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1CB7DAB-0998-437B-9C09-EA2E60D76F89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC97AC8E-5833-4493-BA9F-16025CC3FB64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC97AC8E-5833-4493-BA9F-16025CC3FB64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC97AC8E-5833-4493-BA9F-16025CC3FB64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC97AC8E-5833-4493-BA9F-16025CC3FB64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08FB657D-3A84-405A-A8EE-976971B1F371}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08FB657D-3A84-405A-A8EE-976971B1F371}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08FB657D-3A84-405A-A8EE-976971B1F371}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08FB657D-3A84-405A-A8EE-976971B1F371}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC9DA888-1B61-4238-8369-9D5950935542} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{4273DBBA-2168-4FAD-9FA2-46C3A3D996EB} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{0C7C4826-C128-4DB1-AEB6-F3B108D4F6B0} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{72940162-50BB-43D7-A469-1AC56540D773} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{FB7F7421-300F-494C-B6CB-309864736C9C} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{CF4E1247-83A2-4B27-9AF2-93BEEF94A1EF} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{CD28188A-C87D-4942-8D9D-7A195950711A} = {8C291851-6AC2-490D-A614-5266E35911E3}
+		{F1CB7DAB-0998-437B-9C09-EA2E60D76F89} = {22747415-BC0E-4DCD-AC37-B728B632ED16}
+		{AC97AC8E-5833-4493-BA9F-16025CC3FB64} = {22747415-BC0E-4DCD-AC37-B728B632ED16}
+		{08FB657D-3A84-405A-A8EE-976971B1F371} = {22747415-BC0E-4DCD-AC37-B728B632ED16}
+	EndGlobalSection
+EndGlobal
