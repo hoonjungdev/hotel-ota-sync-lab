@@ -11,6 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+      - ../db/migrations:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U app -d hotel_ota_sync"]
       interval: 5s
