@@ -71,8 +71,8 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W1 (scaffolding) — in progress.**
-> Next: W2 (`MockOta.BlueWave` v1 — OpenTravel-style XML endpoints + 의도적 지연·5xx 주입 토글). Plan §6 마일스톤 표 참조.
+> **Current: W2 — not started.** (W1 complete: scaffolding + Postgres schema v1 + Docker compose v0 + MIT LICENSE + GitHub publish.)
+> W2 task: `MockOta.BlueWave` v1 — OpenTravel-style XML endpoints + 의도적 지연·5xx 주입 토글. Plan §6 마일스톤 표 참조.
 
 매주 첫 커밋 시 위 한 줄을 갱신할 것.
 
