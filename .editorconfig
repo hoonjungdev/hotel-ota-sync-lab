@@ -1,0 +1,18 @@
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+[*.{cs,csproj,xml,json,yml,yaml,md}]
+indent_size = 2
+
+[*.cs]
+indent_size = 4
+
+# Enforce removal of unused using directives at build time.
+# Requires <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild> in csproj
+# (set globally via Directory.Build.props at the repo root).
+dotnet_diagnostic.IDE0005.severity = error

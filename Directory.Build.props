@@ -1,0 +1,27 @@
+<Project>
+
+  <!--
+    Solution-wide MSBuild defaults. Auto-imported by every csproj under this
+    directory; new projects inherit these without per-csproj edits.
+  -->
+
+  <PropertyGroup>
+    <!--
+      Run Roslyn code-style analyzers (the IDExxxx family) at build time so
+      .editorconfig severities are enforced on `dotnet build` and CI, not
+      only inside an IDE.
+    -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!--
+      IDE0005 (remove unnecessary usings) only emits during build when the
+      compiler is asked to analyse all reachable symbols, which historically
+      requires the documentation file to be generated. We don't actually want
+      the .xml docs on disk, so suppress CS1591 (missing XML doc on public
+      members) but keep the analysis on.
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+</Project>

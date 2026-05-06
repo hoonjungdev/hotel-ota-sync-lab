@@ -1,0 +1,16 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/*.user
+**/.git/
+**/.github/
+**/.idea/
+**/.DS_Store
+**/Dockerfile
+**/.dockerignore
+deploy/
+docs/
+loadtest/
+tests/
+**/appsettings.Development.json
