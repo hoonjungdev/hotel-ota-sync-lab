@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel an older in-progress run when a new commit lands on the same ref —
+# saves Actions minutes on rapid push cycles.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          # Pin from global.json (10.0.100, rollForward latestFeature) so CI
+          # tracks the same SDK as local dev without bumping the action input.
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+
+      - name: Restore
+        run: dotnet restore HotelOtaSync.sln
+
+      # Directory.Build.props sets EnforceCodeStyleInBuild=true and
+      # GenerateDocumentationFile=true, which promote IDE0005 (and friends)
+      # to build errors. The build step is the primary style gate; the
+      # `Format` step below is belt-and-braces.
+      - name: Build
+        run: dotnet build HotelOtaSync.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test HotelOtaSync.sln --configuration Release --no-build
+
+      - name: Format
+        run: dotnet format HotelOtaSync.sln --verify-no-changes --no-restore

@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Claude Code worktree directory (per PR Workflow Convention in CLAUDE.md).
+# Settings under .claude/ remain trackable; only ephemeral worktrees are ignored.
+.claude/worktrees/
