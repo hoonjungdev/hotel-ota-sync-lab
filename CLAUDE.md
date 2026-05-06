@@ -71,8 +71,8 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W2 — not started.** (W1 complete: scaffolding + Postgres schema v1 + Docker compose v0 + MIT LICENSE + GitHub publish.)
-> W2 task: `MockOta.BlueWave` v1 — OpenTravel-style XML endpoints + 의도적 지연·5xx 주입 토글. Plan §6 마일스톤 표 참조.
+> **Current: W3 — not started.** (W2 complete: `MockOta.BlueWave` v1 — `OTA_HotelAvailRQ/RS` + `OTA_HotelResNotifRQ/RS` 엔드포인트, fault injection 미들웨어(헤더 오버라이드 + seeded RNG), Dockerfile, compose 통합, Contract 테스트 5건 통과.)
+> W3 task: `IChannelClient` 추상 + `BlueWaveClient` 어댑터 + Polly 재시도/회로차단 + 단위/통합 테스트. Plan §6 마일스톤 표 참조.
 
 매주 첫 커밋 시 위 한 줄을 갱신할 것.
 
