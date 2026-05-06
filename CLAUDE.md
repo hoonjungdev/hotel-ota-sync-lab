@@ -71,17 +71,28 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W3 — not started.** (W2 complete: `MockOta.BlueWave` v1 — `OTA_HotelAvailRQ/RS` + `OTA_HotelResNotifRQ/RS` 엔드포인트, fault injection 미들웨어(헤더 오버라이드 + seeded RNG), Dockerfile, compose 통합, Contract 테스트 5건 통과.)
-> W3 task: `IChannelClient` 추상 + `BlueWaveClient` 어댑터 + Polly 재시도/회로차단 + 단위/통합 테스트. Plan §6 마일스톤 표 참조.
+> **Current: W3 — not started.** (W2 complete via PR #1: `MockOta.BlueWave` v1 — `OTA_HotelAvailRQ/RS` + `OTA_HotelResNotifRQ/RS` 엔드포인트, fault injection 미들웨어(헤더 오버라이드 + seeded RNG), Dockerfile, compose 통합, Contract 테스트 5건. + 메타: `.editorconfig` + `Directory.Build.props`로 IDE0005 빌드 강제.)
+>
+> **Pre-W3 (먼저)**: `feat/ci-baseline` 브랜치 → GitHub Actions baseline (`dotnet build` + `dotnet test` + `dotnet format --verify-no-changes`) → PR → 머지. 30~60분 예산. Plan §6의 W7 항목 일부를 앞당기는 의도.
+> **W3**: `IChannelClient` 추상 + `BlueWaveClient` 어댑터 + Polly 재시도/회로차단 + 단위/통합 테스트. Plan §6 마일스톤 표 참조.
 
 매주 첫 커밋 시 위 한 줄을 갱신할 것.
+
+## PR Workflow Convention (W2 PR #1 이후 확정)
+
+- 브랜치 명명: `feat/<milestone>-<scope>` (예: `feat/w3-channel-adapter`, `feat/ci-baseline`).
+- main 직접 push 금지. 모든 변경은 PR로 통과.
+- 머지 전략: **squash merge** + `--delete-branch`.
+- PR 머지 직전에 `/review` 슬래시 커맨드 1회 실행 — Claude가 5개 Sonnet 에이전트로 병렬 분석 후 신뢰도 ≥80 이슈만 PR에 단일 코멘트로 게시. 코멘트가 있으면 검토·수정 후 머지.
+- worktree 병행: 작업은 `.claude/worktrees/<name>/`에서, 머지 후 `git worktree remove` + 로컬 브랜치 정리.
 
 ## How to Resume (새 세션에서)
 
 1. `git status` + 가장 최근 커밋 3개 확인
 2. Plan §6 마일스톤 표에서 현재 W? 항목 확인
-3. 위 "Phase Marker"의 다음 작업으로 진입
-4. 09–18 KST 시간대면 작업 보류 (점심·저녁·주말로 미룸)
+3. 위 "Phase Marker"의 다음 작업으로 진입 (W3 직전이라면 먼저 Pre-W3 CI baseline)
+4. 작업은 새 worktree(`feat/<milestone>-<scope>`)에서 시작
+5. 09–18 KST 시간대면 작업 보류 (점심·저녁·주말로 미룸)
 
 ## Verification Targets (W8 종료 시)
 
