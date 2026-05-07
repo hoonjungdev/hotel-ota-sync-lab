@@ -2,8 +2,6 @@ using HotelOtaSync.Application.Channels;
 using HotelOtaSync.Infrastructure.Channels.BlueWave;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http;
 
 namespace HotelOtaSync.IntegrationTests.Channels.BlueWave;
 
@@ -49,10 +47,6 @@ internal static class BlueWaveAdapterFactory
 
         if (outboundHandler is not null)
         {
-            // Register the handler as a transient and add it to the pipeline.
-            // We register a factory so the same instance can be observed by
-            // the test for assertion.
-            services.TryAddEnumerable(ServiceDescriptor.Transient<IHttpMessageHandlerBuilderFilter, NoopFilter>());
             services.AddHttpClient<BlueWaveClient>()
                 .AddHttpMessageHandler(() => outboundHandler);
         }
@@ -60,12 +54,5 @@ internal static class BlueWaveAdapterFactory
         var sp = services.BuildServiceProvider();
         var channel = sp.GetRequiredService<IChannelClient>();
         return (sp, channel);
-    }
-
-    /// Filter required only because AddHttpMessageHandler historically needs
-    /// the builder pipeline to be initialised. Kept as a no-op.
-    private sealed class NoopFilter : IHttpMessageHandlerBuilderFilter
-    {
-        public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next) => next;
     }
 }

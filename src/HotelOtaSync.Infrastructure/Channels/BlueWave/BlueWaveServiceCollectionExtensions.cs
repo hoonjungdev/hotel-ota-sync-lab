@@ -18,12 +18,21 @@ public static class BlueWaveServiceCollectionExtensions
     {
         services.AddOptions<BlueWaveOptions>()
             .Bind(configuration.GetSection(BlueWaveOptions.SectionName))
+            .Validate(o => o.BaseUrl is { IsAbsoluteUri: true },
+                $"{BlueWaveOptions.SectionName}:BaseUrl must be set to an absolute URL.")
+            .Validate(o => o.PerAttemptTimeout > TimeSpan.Zero,
+                $"{BlueWaveOptions.SectionName}:PerAttemptTimeout must be greater than zero.")
+            .Validate(o => o.TotalRequestTimeout >= o.PerAttemptTimeout,
+                $"{BlueWaveOptions.SectionName}:TotalRequestTimeout must be >= PerAttemptTimeout.")
+            .Validate(o => o.MaxRetryAttempts >= 0,
+                $"{BlueWaveOptions.SectionName}:MaxRetryAttempts must be >= 0.")
             .ValidateOnStart();
 
         services.AddHttpClient<BlueWaveClient>((sp, http) =>
         {
             var opt = sp.GetRequiredService<IOptions<BlueWaveOptions>>().Value;
-            http.BaseAddress = opt.BaseUrl;
+            // Non-null guaranteed by ValidateOnStart above.
+            http.BaseAddress = opt.BaseUrl!;
             http.Timeout = opt.TotalRequestTimeout;
         }).AddResilienceHandler("blueWave-pipeline", (builder, ctx) =>
         {

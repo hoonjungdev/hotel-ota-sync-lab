@@ -8,7 +8,10 @@ public sealed class BlueWaveOptions
 {
     public const string SectionName = "Channels:BlueWave";
 
-    public Uri BaseUrl { get; set; } = new("http://localhost:5081");
+    /// Required. Validated at startup by AddBlueWaveChannel — a missing
+    /// `Channels:BlueWave:BaseUrl` fails fast instead of silently falling
+    /// back to a localhost default.
+    public Uri? BaseUrl { get; set; }
 
     /// Per-attempt HTTP timeout. The retry strategy schedules another attempt
     /// when this fires, so keep it well below TotalRequestTimeout.
