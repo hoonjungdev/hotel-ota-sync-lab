@@ -82,8 +82,10 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 - 브랜치 명명: `feat/<milestone>-<scope>` (예: `feat/w3-channel-adapter`, `feat/ci-baseline`).
 - main 직접 push 금지. 모든 변경은 PR로 통과.
-- 머지 전략: **rebase merge** (linear history) + `--delete-branch` 기본. 1 커밋 PR이나 fixup이 섞여 정리 가치 없는 PR만 squash. 작성자는 머지 전 `git rebase -i origin/main`으로 PR을 main에 남길 의미 단위로 정돈한다.
-- PR 머지 직전에 `/review` 슬래시 커맨드 1회 실행 — Claude가 5개 Sonnet 에이전트로 병렬 분석 후 신뢰도 ≥80 이슈만 PR에 단일 코멘트로 게시. 코멘트가 있으면 검토·수정 후 머지.
+- 머지 전략: **squash merge** + `--delete-branch` (`gh pr merge --squash`). main 커밋이 PR과 1:1, GitHub이 `(#N)` 자동 부착하여 `git log` 만으로 PR 추적이 됨. PR narrative 분리는 PR 본문 + PR 페이지 commits 탭에 위탁한다. (PR #2에서 rebase merge를 시도했으나 PR# 자동 부착이 빠져 추적성이 손상되어 회귀.)
+- PR 머지 직전 단계:
+  1. `/review` 슬래시 커맨드 1회 — single-agent 인라인 리뷰. (multi-agent 변종은 별개 명령 `/ultrareview`.)
+  2. PR 본문의 Test plan 체크리스트를 명시적으로 검증 → `gh pr edit <#> --body`로 체크박스 갱신. 거짓 체크 금지(검증 못 한 항목은 짧은 노트와 함께 미체크 유지).
 - worktree 병행: 작업은 `.claude/worktrees/<name>/`에서, 머지 후 `git worktree remove` + 로컬 브랜치 정리.
 
 ## How to Resume (새 세션에서)
