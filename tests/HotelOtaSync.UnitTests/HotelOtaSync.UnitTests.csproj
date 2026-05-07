@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\HotelOtaSync.Domain\HotelOtaSync.Domain.csproj" />
     <ProjectReference Include="..\..\src\HotelOtaSync.Application\HotelOtaSync.Application.csproj" />
+    <ProjectReference Include="..\..\src\HotelOtaSync.Infrastructure\HotelOtaSync.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
