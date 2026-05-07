@@ -1,6 +1,7 @@
 using HotelOtaSync.Application.Channels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 using Polly;
@@ -56,7 +57,13 @@ public static class BlueWaveServiceCollectionExtensions
                 });
         });
 
-        services.AddTransient<IChannelClient>(sp => sp.GetRequiredService<BlueWaveClient>());
+        // Register as IEnumerable<IChannelClient>-friendly so subsequent
+        // AddXyzChannel(...) calls (SkyTrip in W6, GreenLeaf as a stretch)
+        // append cleanly. TryAddEnumerable de-dupes by implementation type,
+        // so accidental double-registration of BlueWave does not duplicate
+        // the channel in the enumerable a Refresher iterates over.
+        services.TryAddEnumerable(ServiceDescriptor.Transient<IChannelClient, BlueWaveClient>(
+            sp => sp.GetRequiredService<BlueWaveClient>()));
 
         return services;
     }
