@@ -71,9 +71,9 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W4 — in progress.** Cache layer landing first (`feat/w4-redis-rate-search`): `IRateSnapshotCache` + `ChannelRateRefresher` (Application), `RedisRateSnapshotCache` (Infrastructure, StackExchange.Redis, per-(channel, hotel) Hash keyed by stay date) + `AddRedisRateCache` DI. Also folds in W3-review medium #1: `IChannelClient` registration switched to `TryAddEnumerable` so SkyTrip/GreenLeaf can append cleanly. 31 tests: 21 unit (cache key layout + Refresher behaviour + W3 carry-over), 5 integration (W3 carry-over), 5 contract.
+> **Current: W4 — in progress.** Cache layer + Redis Testcontainers landed. `IRateSnapshotCache` + `ChannelRateRefresher` (Application), `RedisRateSnapshotCache` (Infrastructure, StackExchange.Redis, per-(channel, hotel) Hash keyed by stay date) + `AddRedisRateCache` DI. Also folds in W3-review medium #1: `IChannelClient` registration switched to `TryAddEnumerable` so SkyTrip/GreenLeaf can append cleanly. 35 tests: 22 unit, 8 integration (5 BlueWave + 3 Redis Testcontainers — round-trip, per-day partial refresh, channel partition over the wire), 5 contract.
 >
-> **Next inside W4**: Testcontainers-Redis integration tests (currently deferred — local `Docker.DotNet` ↔ Docker Desktop probing failure on this macOS host) + `HotelOtaSync.Api` Minimal API endpoints (`GET /properties/{hotelCode}/rates`, `POST /admin/channels/{channel}/refresh`) + docker-compose `api` service. **🎯 W4 demo: docker compose up → POST /admin refresh → GET rates → Redis-served.**
+> **Next inside W4**: `HotelOtaSync.Api` Minimal API endpoints (`GET /properties/{hotelCode}/rates`, `POST /admin/channels/{channel}/refresh`) + docker-compose `api` service. **🎯 W4 demo: docker compose up → POST /admin refresh → GET rates → Redis-served.**
 
 매주 첫 커밋 시 위 한 줄을 갱신할 것.
 
