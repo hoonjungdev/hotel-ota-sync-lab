@@ -56,6 +56,23 @@ public class ChannelRateRefresherTests
     }
 
     [Fact]
+    public void Constructor_DuplicateChannelCode_ThrowsChannelException()
+    {
+        var first = new FakeChannelClient(ChannelCode.BlueWave, Array.Empty<RatePoint>());
+        var second = new FakeChannelClient(ChannelCode.BlueWave, Array.Empty<RatePoint>());
+        var fakeCache = new FakeRateSnapshotCache();
+
+        var ex = Assert.Throws<ChannelException>(() =>
+            new ChannelRateRefresher(new IChannelClient[] { first, second }, fakeCache));
+
+        Assert.Equal(ChannelCode.BlueWave, ex.Channel);
+        Assert.Equal(ChannelFailureKind.BadRequest, ex.Kind);
+        Assert.Contains("Duplicate", ex.Message);
+        // Both implementation type names should be mentioned to aid diagnosis.
+        Assert.Contains(nameof(FakeChannelClient), ex.Message);
+    }
+
+    [Fact]
     public async Task RefreshAsync_AdapterThrows_PropagatesToCaller()
     {
         var fakeChannel = new FakeChannelClient(ChannelCode.BlueWave, throwOnPull:

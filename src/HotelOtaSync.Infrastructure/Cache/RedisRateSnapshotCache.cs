@@ -38,11 +38,15 @@ public sealed class RedisRateSnapshotCache : IRateSnapshotCache
         DateRange stay,
         CancellationToken cancellationToken)
     {
+        // StackExchange.Redis async methods do not accept a CancellationToken,
+        // so this entry-point check is effectively the only abort point — if
+        // the caller already cancelled, bail before the first RTT.
+        cancellationToken.ThrowIfCancellationRequested();
+
         var db = _redis.GetDatabase();
         var key = BuildKey(channel, hotelCode);
 
         var fields = stay.EachStayDate().Select(FieldFor).ToArray();
-        if (fields.Length == 0) return Array.Empty<RatePoint>();
 
         var values = await db.HashGetAsync(key, Array.ConvertAll(fields, f => (RedisValue)f))
             .ConfigureAwait(false);
@@ -64,6 +68,8 @@ public sealed class RedisRateSnapshotCache : IRateSnapshotCache
         TimeSpan ttl,
         CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         if (points.Count == 0) return;
 
         var db = _redis.GetDatabase();
@@ -87,6 +93,8 @@ public sealed class RedisRateSnapshotCache : IRateSnapshotCache
         string hotelCode,
         CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var db = _redis.GetDatabase();
         await db.KeyDeleteAsync(BuildKey(channel, hotelCode)).ConfigureAwait(false);
     }

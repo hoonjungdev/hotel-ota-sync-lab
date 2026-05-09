@@ -20,7 +20,22 @@ public sealed class ChannelRateRefresher
         IRateSnapshotCache cache,
         TimeSpan? ttl = null)
     {
-        _byChannel = channels.ToDictionary(c => c.Channel);
+        // Build the lookup with an explicit duplicate check so a misconfigured
+        // DI graph (two adapters claiming the same ChannelCode) surfaces a
+        // diagnostic ChannelException at startup instead of the generic
+        // ArgumentException ToDictionary would throw.
+        var byChannel = new Dictionary<ChannelCode, IChannelClient>();
+        foreach (var c in channels)
+        {
+            if (!byChannel.TryAdd(c.Channel, c))
+            {
+                throw new ChannelException(c.Channel, ChannelFailureKind.BadRequest,
+                    $"Duplicate IChannelClient registered for channel '{c.Channel}' " +
+                    $"(types: {byChannel[c.Channel].GetType().Name}, {c.GetType().Name}). " +
+                    "Each ChannelCode must map to exactly one adapter.");
+            }
+        }
+        _byChannel = byChannel;
         _cache = cache;
         _ttl = ttl ?? TimeSpan.FromMinutes(5);
     }
