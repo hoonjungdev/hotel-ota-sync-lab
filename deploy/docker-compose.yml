@@ -50,5 +50,32 @@ services:
       retries: 5
       start_period: 15s
 
+  api:
+    build:
+      context: ..
+      dockerfile: src/HotelOtaSync.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Channels__BlueWave__BaseUrl: http://mock-bluewave:8080/
+      Channels__BlueWave__PerAttemptTimeout: "00:00:02"
+      Channels__BlueWave__TotalRequestTimeout: "00:00:10"
+      Channels__BlueWave__MaxRetryAttempts: "2"
+      Cache__Redis__ConnectionString: redis:6379
+      Cache__Redis__SnapshotTtl: "00:05:00"
+      Admin__Token: ${ADMIN_TOKEN:-INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678}
+    ports:
+      - "5100:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mock-bluewave:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+
 volumes:
   pg-data:

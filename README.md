@@ -56,11 +56,28 @@ Diagram: see [`docs/architecture.png`](docs/architecture.png) (lands W7).
 ```bash
 git clone https://github.com/hoonjungdev/hotel-ota-sync-lab
 cd hotel-ota-sync-lab
-docker compose -f deploy/docker-compose.yml up -d   # Postgres + Redis
+docker compose -f deploy/docker-compose.yml up -d   # Postgres + Redis + mock-bluewave + api
 dotnet build
 ```
 
-The end-to-end demo (rate search, reservation ingestion, idempotency, fault injection) lands at week 4. The full case study with benchmark numbers ships at week 8 — see [`docs/case-study.md`](docs/case-study.md).
+### Running the W4 demo
+
+```bash
+docker compose -f deploy/docker-compose.yml up -d --build
+
+TOKEN=INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"hotelCode":"HOTEL-1","from":"2026-06-01","to":"2026-06-03"}' \
+  http://localhost:5100/admin/channels/bluewave/refresh
+# → {"pointsCached": N}
+
+curl 'http://localhost:5100/properties/HOTEL-1/rates?from=2026-06-01&to=2026-06-03'
+# → {"channels":{"BlueWave":[ ... rate points ... ]}}
+```
+
+The default `Admin__Token` in `deploy/docker-compose.yml` is intentionally invalid-looking. The Api refuses to start in non-Development environments with this sentinel token; override with the `ADMIN_TOKEN` env var (or a `.env` file in the compose context) for any non-toy use.
+
+The full case study with benchmark numbers ships at week 8 — see [`docs/case-study.md`](docs/case-study.md).
 
 ## Layout
 

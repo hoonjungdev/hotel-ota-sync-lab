@@ -71,9 +71,9 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W4 — in progress.** Cache layer + Redis Testcontainers landed. `IRateSnapshotCache` + `ChannelRateRefresher` (Application), `RedisRateSnapshotCache` (Infrastructure, StackExchange.Redis, per-(channel, hotel) Hash keyed by stay date) + `AddRedisRateCache` DI. Also folds in W3-review medium #1: `IChannelClient` registration switched to `TryAddEnumerable` so SkyTrip/GreenLeaf can append cleanly. 35 tests: 22 unit, 8 integration (5 BlueWave + 3 Redis Testcontainers — round-trip, per-day partial refresh, channel partition over the wire), 5 contract.
+> **Current: W4 — complete.** `HotelOtaSync.Api` activated with `GET /properties/{hotelCode}/rates` (multi-channel envelope, Redis-served, 0 outbound OTA calls), `POST /admin/channels/{channel}/refresh` (Bearer-protected, `ChannelRateRefresher` driven), `GET /health` (Redis ping). Compose now spins up postgres + redis + mock-bluewave + api healthy. Defense in depth on admin token: compose default `INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678`, `IValidateOptions` refuses startup when `ASPNETCORE_ENVIRONMENT != Development` AND token contains the sentinel. `ChannelException` detail in ProblemDetails responses gated on `IsDevelopment()` to avoid upstream-info leaks in non-dev envs. 51 tests: 31 unit (22 carry + 9 new), 15 integration (5 BlueWave + 3 Redis Testcontainers + 7 Api e2e), 5 contract.
 >
-> **Next inside W4**: `HotelOtaSync.Api` Minimal API endpoints (`GET /properties/{hotelCode}/rates`, `POST /admin/channels/{channel}/refresh`) + docker-compose `api` service. **🎯 W4 demo: docker compose up → POST /admin refresh → GET rates → Redis-served.**
+> **Next: W5** — `Sync Worker` `BackgroundService` with `PullArisJob` (cron 1 min). Will reuse `ChannelRateRefresher` and (likely) `GetCachedRatesQuery` for staleness checks.
 
 매주 첫 커밋 시 위 한 줄을 갱신할 것.
 
