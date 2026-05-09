@@ -85,4 +85,41 @@ public class RatesEndpointIntegrationTests : IClassFixture<ApiTestFixture>
         var resp = await _fixture.Client.SendAsync(req);
         Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode);
     }
+
+    [Fact]
+    public async Task Get_FromGreaterEqualTo_Returns400()
+    {
+        // Half-open range invariant: from must be strictly before to. The
+        // endpoint MUST reject from == to (zero-night stay) and from > to.
+        var resp = await _fixture.Client.GetAsync(
+            "/properties/HOTEL-X/rates?from=2026-06-03&to=2026-06-03");
+
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+    }
+
+    [Fact]
+    public async Task AdminRefresh_EmptyHotelCode_Returns400()
+    {
+        var req = AdminRefresh("bluewave", new
+        {
+            hotelCode = "",
+            from = "2026-06-01",
+            to = "2026-06-03",
+        });
+        var resp = await _fixture.Client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+    }
+
+    [Fact]
+    public async Task AdminRefresh_FromGreaterEqualTo_Returns400()
+    {
+        var req = AdminRefresh("bluewave", new
+        {
+            hotelCode = "HOTEL-X",
+            from = "2026-06-03",
+            to = "2026-06-01",
+        });
+        var resp = await _fixture.Client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+    }
 }

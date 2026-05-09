@@ -71,7 +71,7 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W4 — complete.** `HotelOtaSync.Api` activated with `GET /properties/{hotelCode}/rates` (multi-channel envelope, Redis-served, 0 outbound OTA calls), `POST /admin/channels/{channel}/refresh` (Bearer-protected, `ChannelRateRefresher` driven), `GET /health` (Redis ping). Compose now spins up postgres + redis + mock-bluewave + api healthy. Defense in depth on admin token: compose default `INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678`, `IValidateOptions` refuses startup when `ASPNETCORE_ENVIRONMENT != Development` AND token contains the sentinel. 48 tests: 31 unit (22 carry + 9 new), 12 integration (5 BlueWave + 3 Redis Testcontainers + 4 Api e2e), 5 contract.
+> **Current: W4 — complete.** `HotelOtaSync.Api` activated with `GET /properties/{hotelCode}/rates` (multi-channel envelope, Redis-served, 0 outbound OTA calls), `POST /admin/channels/{channel}/refresh` (Bearer-protected, `ChannelRateRefresher` driven), `GET /health` (Redis ping). Compose now spins up postgres + redis + mock-bluewave + api healthy. Defense in depth on admin token: compose default `INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678`, `IValidateOptions` refuses startup when `ASPNETCORE_ENVIRONMENT != Development` AND token contains the sentinel. `ChannelException` detail in ProblemDetails responses gated on `IsDevelopment()` to avoid upstream-info leaks in non-dev envs. 51 tests: 31 unit (22 carry + 9 new), 15 integration (5 BlueWave + 3 Redis Testcontainers + 7 Api e2e), 5 contract.
 >
 > **Next: W5** — `Sync Worker` `BackgroundService` with `PullArisJob` (cron 1 min). Will reuse `ChannelRateRefresher` and (likely) `GetCachedRatesQuery` for staleness checks.
 

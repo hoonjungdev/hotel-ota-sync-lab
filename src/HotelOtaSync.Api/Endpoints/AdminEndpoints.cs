@@ -25,6 +25,7 @@ internal static class AdminEndpoints
             string channel,
             RefreshRequest body,
             ChannelRateRefresher refresher,
+            IHostEnvironment env,
             CancellationToken ct) =>
         {
             if (!ByRouteSegment.TryGetValue(channel, out var channelCode))
@@ -47,7 +48,7 @@ internal static class AdminEndpoints
             }
             catch (ChannelException ex)
             {
-                return ChannelExceptionMapper.ToResult(ex);
+                return ChannelExceptionMapper.ToResult(ex, env);
             }
         });
 
