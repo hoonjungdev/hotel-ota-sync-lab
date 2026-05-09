@@ -71,28 +71,28 @@ docs/  case-study.md, benchmark.md, architecture.png, adr/
 
 ## Phase Marker
 
-> **Current: W4 — not started.** (W3 complete: `IChannelClient` + `ChannelCapabilities` + `ChannelException` (Application), `Money`/`DateRange` value objects (Domain), `BlueWaveClient` XML adapter wrapped in a Polly v8 resilience pipeline (per-attempt timeout + exponential-backoff retry with jitter + circuit breaker) wired via `AddBlueWaveChannel(...)`. 18 tests: 8 unit (XML mapping + status-code → `ChannelFailureKind`), 5 integration (TestServer + fault-injection header → retry/CB behaviour), 5 contract (W2 carry-over). CI baseline already in place from earlier PR.)
+> **Current: W4 — in progress.** Cache layer landing first (`feat/w4-redis-rate-search`): `IRateSnapshotCache` + `ChannelRateRefresher` (Application), `RedisRateSnapshotCache` (Infrastructure, StackExchange.Redis, per-(channel, hotel) Hash keyed by stay date) + `AddRedisRateCache` DI. Also folds in W3-review medium #1: `IChannelClient` registration switched to `TryAddEnumerable` so SkyTrip/GreenLeaf can append cleanly. 31 tests: 21 unit (cache key layout + Refresher behaviour + W3 carry-over), 5 integration (W3 carry-over), 5 contract.
 >
-> **W4**: Redis caching layer + `GET /properties/{id}/rates` API. **🎯 첫 데모: docker compose up → Postman 요금 조회 → Redis 응답.** Plan §6 마일스톤 표 참조.
+> **Next inside W4**: Testcontainers-Redis integration tests (currently deferred — local `Docker.DotNet` ↔ Docker Desktop probing failure on this macOS host) + `HotelOtaSync.Api` Minimal API endpoints (`GET /properties/{hotelCode}/rates`, `POST /admin/channels/{channel}/refresh`) + docker-compose `api` service. **🎯 W4 demo: docker compose up → POST /admin refresh → GET rates → Redis-served.**
 
 매주 첫 커밋 시 위 한 줄을 갱신할 것.
 
 ## PR Workflow Convention (W2 PR #1 이후 확정)
 
-- 브랜치 명명: `feat/<milestone>-<scope>` (예: `feat/w3-channel-adapter`, `feat/ci-baseline`).
+- 브랜치 명명: `feat/<milestone>-<scope>` (예: `feat/w3-channel-adapter`, `feat/w4-redis-rate-search`).
 - main 직접 push 금지. 모든 변경은 PR로 통과.
-- 머지 전략: **squash merge** + `--delete-branch` (`gh pr merge --squash`). main 커밋이 PR과 1:1, GitHub이 `(#N)` 자동 부착하여 `git log` 만으로 PR 추적이 됨. PR narrative 분리는 PR 본문 + PR 페이지 commits 탭에 위탁한다. (PR #2에서 rebase merge를 시도했으나 PR# 자동 부착이 빠져 추적성이 손상되어 회귀.)
+- 머지 전략: **squash merge** + `--delete-branch` (`gh pr merge --squash --delete-branch`). main 커밋이 PR과 1:1, GitHub이 `(#N)` 자동 부착하여 `git log` 만으로 PR 추적이 됨. PR narrative 분리는 PR 본문 + PR 페이지 commits 탭에 위탁한다. (PR #2에서 rebase merge를 시도했으나 PR# 자동 부착이 빠져 추적성이 손상되어 회귀.)
 - PR 머지 직전 단계:
-  1. `/review` 슬래시 커맨드 1회 — single-agent 인라인 리뷰. (multi-agent 변종은 별개 명령 `/ultrareview`.)
+  1. `/review` 슬래시 커맨드 1회 — single-agent 인라인 리뷰. (multi-agent 변종은 별개 명령 `/ultrareview`.) 작은 PR은 명시적 skip 가능 — PR 본문에 "Skipped: <이유>" 기록.
   2. PR 본문의 Test plan 체크리스트를 명시적으로 검증 → `gh pr edit <#> --body`로 체크박스 갱신. 거짓 체크 금지(검증 못 한 항목은 짧은 노트와 함께 미체크 유지).
-- worktree 병행: 작업은 `.claude/worktrees/<name>/`에서, 머지 후 `git worktree remove` + 로컬 브랜치 정리.
+- **브랜치 작업** (W4부터): 메인 워크트리에서 `git checkout -b feat/<milestone>-<scope>` 로 브랜치만 만들어 작업. 머지 후 `git checkout main && git pull --ff-only && git fetch --prune && git branch -d feat/<...>`. **worktree 사용 안 함**. (W3까지는 `.claude/worktrees/<name>/`을 썼으나 1인·1프로젝트 환경에서 동시 진행 분기가 거의 없어 폐기.)
 
 ## How to Resume (새 세션에서)
 
 1. `git status` + 가장 최근 커밋 3개 확인
 2. Plan §6 마일스톤 표에서 현재 W? 항목 확인
-3. 위 "Phase Marker"의 다음 작업으로 진입 (W3 직전이라면 먼저 Pre-W3 CI baseline)
-4. 작업은 새 worktree(`feat/<milestone>-<scope>`)에서 시작
+3. 위 "Phase Marker"의 다음 작업으로 진입
+4. main에서 `git checkout -b feat/<milestone>-<scope>` 로 브랜치 생성 (worktree 사용 안 함)
 5. 09–18 KST 시간대면 작업 보류 (점심·저녁·주말로 미룸)
 
 ## Verification Targets (W8 종료 시)
