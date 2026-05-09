@@ -84,6 +84,8 @@ public sealed class AdminOptions
 
 Bound from `"Admin"` config section. Validated on startup with the same `OptionsValidationException` pattern Part 1 settled on for `RedisRateCacheOptions`. A misconfigured deployment fails fast at boot, not on first admin call.
 
+**Environment guard** (defense in depth): an additional `IValidateOptions<AdminOptions>` (or equivalent boot check) refuses to start when `ASPNETCORE_ENVIRONMENT != Development` AND the configured token contains the string `INSECURE-DEV-ONLY`. The compose default token is `INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678` — visibly fake so any reader knows it's not a real secret, *and* structurally locked out of any non-Development env. ~5 lines of validator code; means the zero-config `docker compose up` demo path stays simple while the dev/prod gap is enforced in code, not just in prose.
+
 ### `ChannelExceptionMapper`
 
 Centralises the `ChannelException` → HTTP mapping so both endpoints (and any future `/admin/*` that calls a channel adapter) get consistent ProblemDetails responses.
@@ -160,9 +162,10 @@ Wired with `builder.Services.AddProblemDetails()` + `app.UseExceptionHandler()`.
 |---|---|---|
 | Unit | `GetCachedRatesQueryTests` | Empty cache → all registered channels return empty arrays. Partial cache → only filled channels show data. Channel enumeration deduplicates if DI registers the same code twice. (~3 tests) |
 | Unit | `AdminTokenFilterTests` | Valid token passes through; missing header → 401; mismatched token → 401. (~3 tests) |
+| Unit | `AdminOptionsValidatorTests` | Production env + token containing `INSECURE-DEV-ONLY` → validation fails. Development env + same token → passes. Any env + custom token → passes. (~3 tests) |
 | Integration | `RatesEndpointIntegrationTests` (uses `WebApplicationFactory<HotelOtaSync.Api.Program>` + existing `RedisTestFixture` + existing `BlueWaveTestFixture`) | GET happy path returns `{channels:{BlueWave:[...],SkyTrip:[]}}` after seeding cache. GET on unrefreshed hotel → all channels empty. POST without Bearer → 401. POST end-to-end: admin refresh → BlueWave mock pull → Redis populated → GET sees it. (~4 tests) |
 
-Expected total: 35 → ~45.
+Expected total: 35 → ~48.
 
 `Program` partial class issue (already noted in `BlueWaveTestFixture`): `HotelOtaSync.Api` and `MockOta.BlueWave` both declare global `Program`. New fixture references `HotelOtaSync.Api.Program` explicitly to disambiguate.
 
@@ -181,7 +184,7 @@ api:
     Channels__BlueWave__MaxRetryAttempts: "2"
     Redis__ConnectionString: redis:6379
     Redis__SnapshotTtl: "00:05:00"
-    Admin__Token: ${ADMIN_TOKEN:-dev-token-change-me-please-1234}
+    Admin__Token: ${ADMIN_TOKEN:-INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678}
   ports:
     - "5100:8080"
   depends_on:
@@ -199,10 +202,14 @@ api:
 
 Postgres is **not** wired into `api` — Plan W4 doesn't need it. Will land in W5 when the Worker arrives.
 
+## In scope (also)
+
+- **README runbook** (one short paragraph): the three-command demo sequence from "PR shape" below, plus a one-line note that the compose default `Admin__Token` is intentionally invalid-looking and should be overridden via `ADMIN_TOKEN` env var or a `.env` file for any non-toy use. Postman/Bruno collection (Plan §1.7) stays deferred to W7–W8 case-study work.
+
 ## Out of scope (explicit)
 
 - Postgres property-table reads (Q2 decision A — deferred to W5+)
-- README W4 demo runbook (lands separately or in this PR's last commit; not part of the design)
+- Postman/Bruno collection (Plan §1.7 — W7–W8 case-study work)
 - OpenAPI / Swagger UI (no Plan requirement; scope creep)
 - HTTPS / certs (compose internal HTTP only; demo)
 - Rate limiting / CORS (no Plan requirement)
@@ -213,7 +220,7 @@ Single PR `feat/w4-api-endpoints` covering all of the above. Estimated diff: ~60
 
 ```bash
 docker compose up -d
-TOKEN=dev-token-change-me-please-1234
+TOKEN=INSECURE-DEV-ONLY-DO-NOT-USE-IN-PRODUCTION-12345678
 curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"hotelCode":"HOTEL-1","from":"2026-06-01","to":"2026-06-08"}' \
   http://localhost:5100/admin/channels/bluewave/refresh
